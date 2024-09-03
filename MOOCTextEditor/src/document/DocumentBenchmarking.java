@@ -20,7 +20,7 @@ public class DocumentBenchmarking {
 	    int trials = 100;
 
 	    // The text to test on
-	    String textfile = "data/warAndPeace.txt";
+	    String textfile = "E:\\Java Coursera Course 4\\Main Project\\MOOCTextEditor\\data\\warAndPeace.txt";
 		
 	    // The amount of characters to increment each step
 	    // You can play around with this
@@ -41,8 +41,31 @@ public class DocumentBenchmarking {
 				numToCheck += increment)
 		{
 			// numToCheck holds the number of characters that you should read from the 
-			// file to create both a BasicDocument and an EfficientDocument.  
-			
+			// file to create both a BasicDocument and an EfficientDocument.
+			System.out.print(numToCheck + "\t");
+			String testString = getStringFromFile(textfile, numToCheck);
+			long start_time = System.nanoTime();
+
+			for(int i = 0; i < trials; i++){
+				BasicDocument obj = new BasicDocument(testString);
+				obj.getFleschScore();
+			}
+
+			long end_time = System.nanoTime();
+			double elapsed_time = (end_time - start_time) / 100000000.0;
+			System.out.print(elapsed_time + "\t");
+
+
+			start_time = System.nanoTime();
+			for(int i = 0; i < trials; i++){
+				EfficientDocument obj = new EfficientDocument(testString);
+				obj.getFleschScore();
+			}
+
+			end_time = System.nanoTime();
+			elapsed_time = (end_time - start_time) / 100000000.0;
+			System.out.print(elapsed_time + "\n");
+
 			/* Each time through this loop you should:
 			 * 1. Print out numToCheck followed by a tab (\t) (NOT a newline)
 			 * 2. Read numToCheck characters from the file into a String
