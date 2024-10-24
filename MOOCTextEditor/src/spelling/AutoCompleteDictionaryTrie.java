@@ -40,6 +40,22 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public boolean addWord(String word)
 	{
 	    //TODO: Implement this method.
+		TrieNode curr = root;
+		word = word.toLowerCase();
+		for(int i = 0; i < word.length(); i++){
+			char c = word.charAt(i);
+			if(curr.getChild(c) == null){
+				curr = curr.insert(c);
+			}
+			else{
+				curr = curr.getChild(c);
+			}
+			if(i == (word.length() - 1) && curr.endsWord() == false){
+				curr.setEndsWord(true);
+				this.size++;
+				return true;
+			}
+		}
 	    return false;
 	}
 	
@@ -50,7 +66,7 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public int size()
 	{
 	    //TODO: Implement this method
-	    return 0;
+	    return this.size;
 	}
 	
 	
@@ -60,7 +76,16 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
 	public boolean isWord(String s) 
 	{
 	    // TODO: Implement this method
-		return false;
+		s = s.toLowerCase();
+		TrieNode curr = root;
+		for(int i = 0; i < s.length(); i++){
+			char c = s.charAt(i);
+			curr = curr.getChild(c);
+			if(curr == null){
+				return false;
+			}
+		}
+		return curr.endsWord();
 	}
 
 	/** 
@@ -100,8 +125,34 @@ public class AutoCompleteDictionaryTrie implements  Dictionary, AutoComplete {
     	 //       If it is a word, add it to the completions list
     	 //       Add all of its child nodes to the back of the queue
     	 // Return the list of completions
+		 prefix = prefix.toLowerCase();
+		 TrieNode curr = root;
+		 List<String>completion = new LinkedList<String>();
+
+		 for(int i = 0; i < prefix.length(); i++){
+			char c = prefix.charAt(i);
+			curr = curr.getChild(c);
+			if(curr == null){
+				return completion;
+			}
+		 }
+
+		 LinkedList<TrieNode> queue = new LinkedList<TrieNode>();
+		 queue.add(curr);
+
+		 while(queue.size() > 0 && completion.size() < numCompletions){
+			TrieNode node = queue.removeFirst();
+			if(node.endsWord()){
+				completion.add(node.getText());
+			}
+
+			Set<Character> charset = node.getValidNextCharacters();
+			for(Character c : charset){
+				queue.add(node.getChild(c));
+			}
+		 }
     	 
-         return null;
+         return completion;
      }
 
  	// For debugging
