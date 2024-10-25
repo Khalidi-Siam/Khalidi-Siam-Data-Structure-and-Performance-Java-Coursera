@@ -27,9 +27,9 @@ public class WPTree implements WordPath {
 	public WPTree () {
 		this.root = null;
 		// TODO initialize a NearbyWords object
-		// Dictionary d = new DictionaryHashSet();
-		// DictionaryLoader.loadDictionary(d, "data/dict.txt");
-		// this.nw = new NearbyWords(d);
+		Dictionary d = new DictionaryHashSet();
+		DictionaryLoader.loadDictionary(d, "E:\\\\Java Coursera Course 4\\\\Main Project\\\\MOOCTextEditor\\\\data\\\\dict.txt");
+		this.nw = new NearbyWords(d);
 	}
 	
 	//This constructor will be used by the grader code
@@ -42,6 +42,27 @@ public class WPTree implements WordPath {
 	public List<String> findPath(String word1, String word2) 
 	{
 	    // TODO: Implement this method.
+        LinkedList<WPTreeNode> queue = new LinkedList<WPTreeNode>();
+        HashSet<String> visited = new HashSet<String>();
+        root = new WPTreeNode(word1, null);
+
+        queue.add(root);
+        while(!queue.isEmpty()){
+            WPTreeNode curr = queue.remove(0);
+            visited.add(curr.getWord());
+            List<String> mutationList = nw.distanceOne(curr.getWord(), true);
+            for(String s : mutationList){
+                if(!visited.contains(s)){
+                    WPTreeNode newNode = new WPTreeNode(s, curr);
+                    if(s.equals(word2)){
+                        return newNode.buildPathToRoot();
+                    }
+                    else{
+                        queue.add(newNode);
+                    }
+                }
+            }
+        }
 	    return new LinkedList<String>();
 	}
 	
